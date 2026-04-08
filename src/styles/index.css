@@ -1,0 +1,41 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* Slick Carousel Custom Styles */
+.slick-dots {
+  bottom: -40px;
+}
+
+.slick-dots li button:before {
+  font-size: 10px;
+  color: #6366f1;
+  opacity: 0.3;
+}
+
+.slick-dots li.slick-active button:before {
+  opacity: 1;
+  color: #6366f1;
+}
+
+.slick-slide {
+  transition: all 0.3s ease;
+}
+
+.slick-slide:not(.slick-center) {
+  opacity: 0.5;
+  transform: scale(0.85);
+}
+
+.slick-center {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.slick-arrow {
+  z-index: 20;
+}
+
+.slick-arrow:before {
+  display: none;
+}
