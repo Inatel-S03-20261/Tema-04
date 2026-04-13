@@ -64,7 +64,7 @@ graph TD
     Jogador --> UC1
     Jogador --> UC2
     Jogador --> UC3
-    UC3 -.->|extend| UC4
+    UC4 -.->|extend| UC3
 
     UC1 --> SistemaJogadores
     UC2 --> SistemaJogadores
@@ -85,14 +85,14 @@ classDiagram
         +realizarCadastro()
     }
 
-    class TelaDetalhesCarta {
-        +exibirDetalhesCarta()
-    }
-
     class JogadorService {
         +autenticar()
         +guardarToken()
         +validarToken()
+    }
+
+    class TelaDetalhesCarta {
+        +exibirDetalhesCarta()
     }
 
     class VisualizacaoCartas {
@@ -123,13 +123,13 @@ classDiagram
     TelaLogin ..> JogadorService : usa
     TelaCadastro ..> JogadorService : usa
     TelaDetalhesCarta ..> PokemonService : usa
-    VisualizacaoCartas ..> JogadorService : usa
+    VisualizacaoCartas ..> PokemonService : usa
     VisualizacaoCartas ..> DistribuicaoCartasService : usa
-    VisualizacaoCartas --> Pokemon : exibe
-    DistribuicaoCartasService ..> PokemonService : busca
-    PokemonService --> Pokemon : 0..*
-    VisualizacaoCartas "1" --> DistribuicaoCartasService : usa
+    VisualizacaoCartas "1" --> "0..*" Pokemon : exibe
+    PokemonService --> Pokemon : busca
 ```
+
+[Versão dos diagramas no miro](https://miro.com/welcomeonboard/Mlc0NDJwdDlRTXRKUFdyUUt4KzdZZ1J0NllXN1M0YldsbVBVcVNzY3Y2RkIzN2dnUjFzalVaeEplUTRWTnAvRmd5SXhVUHZ6WkVYQ1pWRXBXbmpiT3hEUDRVUEFuNVU3aGtkNGNUOVB1VFc1VUFXV1F5QXJzcU0rSWVxVDd3VDVnbHpza3F6REdEcmNpNEFOMmJXWXBBPT0hdjE=?share_link_id=404047321847).
 
 ---
 
