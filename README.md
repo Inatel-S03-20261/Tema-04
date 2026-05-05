@@ -74,60 +74,7 @@ graph TD
 
 ### Diagrama de Classes
 
-```mermaid
-classDiagram
-    class TelaLogin {
-        +exibirLogin()
-        +redirecionarAposLogin()
-    }
-
-    class TelaCadastro {
-        +realizarCadastro()
-    }
-
-    class JogadorService {
-        +autenticar()
-        +guardarToken()
-        +validarToken()
-    }
-
-    class TelaDetalhesCarta {
-        +exibirDetalhesCarta()
-    }
-
-    class VisualizacaoCartas {
-        -idJogador
-        -nomeJogador
-        -listaCartas: Carta[]
-        +carregarCartas()
-        +exibirCartas()
-    }
-
-    class DistribuicaoCartasService {
-        -idPokemon
-        -idJogador
-        +consultarCartas(token)
-    }
-
-    class PokemonService {
-        +obterDetalhes(idPokemon)
-    }
-
-    class Pokemon {
-        -idPokemon
-        -nome
-        -tipo
-        -imagem
-    }
-
-    TelaLogin ..> JogadorService : usa
-    TelaCadastro ..> JogadorService : usa
-    TelaDetalhesCarta ..> PokemonService : usa
-    VisualizacaoCartas ..> PokemonService : usa
-    VisualizacaoCartas ..> DistribuicaoCartasService : usa
-    VisualizacaoCartas "1" --> "0..*" Pokemon : exibe
-    PokemonService --> Pokemon : busca
-```
+![Diagrama de Classes](docs/diagrama-classes-v3.jpg)
 
 [Versão dos diagramas no miro](https://miro.com/welcomeonboard/Mlc0NDJwdDlRTXRKUFdyUUt4KzdZZ1J0NllXN1M0YldsbVBVcVNzY3Y2RkIzN2dnUjFzalVaeEplUTRWTnAvRmd5SXhVUHZ6WkVYQ1pWRXBXbmpiT3hEUDRVUEFuNVU3aGtkNGNUOVB1VFc1VUFXV1F5QXJzcU0rSWVxVDd3VDVnbHpza3F6REdEcmNpNEFOMmJXWXBBPT0hdjE=?share_link_id=404047321847).
 
