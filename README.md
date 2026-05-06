@@ -47,30 +47,7 @@ Esta aplicação é o **frontend** do módulo de Visualização de Cartas dentro
 
 ### Diagrama de Caso de Uso
 
-```mermaid
-graph TD
-    Jogador((Jogador))
-    SistemaJogadores((Sistema de\nJogadores))
-    SistemaCartas((Sistema de\nCartas))
-    PokeAPI((API de\nPokémon))
-
-    subgraph Sistema: Visualização de Cartas
-        UC1[Tela de Login]
-        UC2[Tela de Cadastro]
-        UC3[Visualizar Cartas]
-        UC4[Visualizar Detalhes da Carta]
-    end
-
-    Jogador --> UC1
-    Jogador --> UC2
-    Jogador --> UC3
-    UC4 -.->|extend| UC3
-
-    UC1 --> SistemaJogadores
-    UC2 --> SistemaJogadores
-    UC3 --> SistemaCartas
-    UC4 --> PokeAPI
-```
+![Diagrama de Caso de Uso](docs/diagrama-casos-de-uso-v2.jpg)
 
 ### Diagrama de Classes
 
