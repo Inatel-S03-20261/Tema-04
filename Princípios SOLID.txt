@@ -1,0 +1,31 @@
+Princípios SOLID e sua aplicação no projeto
+
+S — Single Responsibility Principle
+
+(Princípio da Responsabilidade Única)
+
+No projeto, o princípio da responsabilidade única foi aplicado ao dividir o sistema em componentes com funções bem definidas. As telas são responsáveis apenas pela interação com o usuário, os controllers gerenciam o fluxo das ações, os services concentram as regras de negócio e as entidades armazenam os dados do sistema. Com isso, cada classe possui uma única responsabilidade, tornando o código mais organizado e de fácil manutenção.
+
+O — Open/Closed Principle
+
+(Princípio Aberto/Fechado)
+
+O princípio aberto/fechado foi implementado por meio do uso de interfaces, como IPokemonService e IJogadorService. Essa abordagem permite adicionar novas funcionalidades ou alterar implementações existentes sem modificar os controllers já desenvolvidos, facilitando a expansão e evolução do sistema.
+
+L — Liskov Substitution Principle
+
+(Princípio da Substituição de Liskov)
+
+No projeto, o princípio da substituição de Liskov é aplicado através das interfaces e de suas implementações concretas. Serviços como PokemonService podem substituir IPokemonService sem comprometer o funcionamento da aplicação, garantindo que os controllers continuem operando corretamente independentemente da implementação utilizada.
+
+I — Interface Segregation Principle
+
+(Princípio da Segregação de Interfaces)
+
+O princípio da segregação de interfaces foi utilizado na criação de interfaces específicas para cada tipo de serviço do sistema. Dessa forma, cada classe depende apenas dos métodos realmente necessários para sua função, evitando dependências desnecessárias e tornando o código mais coeso e eficiente.
+
+D — Dependency Inversion Principle
+
+(Princípio da Inversão de Dependência)
+
+No projeto, o princípio da inversão de dependência foi aplicado ao fazer com que os controllers dependam de abstrações em vez de implementações concretas. Por exemplo, CartasController utiliza IPokemonService ao invés de depender diretamente de PokemonService. Isso reduz o acoplamento entre as classes, além de facilitar testes, manutenção e futuras alterações no sistema.
