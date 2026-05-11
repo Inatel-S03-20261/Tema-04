@@ -1,4 +1,4 @@
-![alt text](image.png)
+![alt text](img/image.png)
 
 # Aplicação dos Princípios SOLID
 
@@ -140,3 +140,5 @@ Isso reduz o acoplamento entre as camadas do sistema e aumenta a flexibilidade d
 A utilização dos princípios SOLID contribuiu para uma arquitetura mais organizada, modular e de fácil manutenção.
 
 O uso de interfaces, separação de responsabilidades e desacoplamento entre camadas facilita futuras expansões e melhorias no sistema.
+
+#### Autores: Bruna, João Pedro, João Vitor e Pedro.
