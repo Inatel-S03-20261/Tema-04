@@ -8,8 +8,6 @@ dist/
 dist-ssr/
 build/
 
-package-lock.json
-
 # Vite
 .vite/
 
@@ -41,3 +39,5 @@ Thumbs.db
 
 # TypeScript
 *.tsbuildinfo
+
+package-lock.json
