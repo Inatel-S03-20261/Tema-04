@@ -2,7 +2,7 @@
 
 ### 🔗 Integração com APIs (backend)
 
-- [ ] **[alta]** Substituir `mockPokemons` por GET real no Serviço de Distribuição de Cartas
+- [X] **[alta]** Substituir `mockPokemons` por GET real no Serviço de Distribuição de Cartas
   - Endpoint: recebe o nome do Pokémon via Postman → busca na PokéAPI → retorna os dados. Atualmente tudo está hardcoded em `App.tsx`.
 
 - [ ] **[alta]** Implementar `PokemonService.obterDetalhes(idPokemon)`
