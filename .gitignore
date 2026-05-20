@@ -8,6 +8,8 @@ dist/
 dist-ssr/
 build/
 
+package-lock.json
+
 # Vite
 .vite/
 
