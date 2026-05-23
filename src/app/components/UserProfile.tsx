@@ -6,7 +6,6 @@ interface UserProfileProps {
   user: {
     name: string;
     avatar: string;
-    level: number;
   };
 }
 
@@ -33,7 +32,7 @@ export function UserProfile({ user }: UserProfileProps) {
   return (
     <div className="relative" ref={dropdownRef}>
       <motion.button
-        className="flex items-center gap-3 bg-white rounded-full pr-4 pl-1 py-1 shadow-lg hover:shadow-xl transition-shadow"
+        className="flex items-center gap-3 bg-white border border-border rounded-full pr-4 pl-1 py-1 shadow-md hover:shadow-xl transition-shadow cursor-pointer"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={() => setIsOpen(!isOpen)}
@@ -43,10 +42,7 @@ export function UserProfile({ user }: UserProfileProps) {
           alt={user.name}
           className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500"
         />
-        <div className="text-left">
-          <div className="text-sm text-gray-900 leading-none mb-1">{user.name}</div>
-          <div className="text-xs text-gray-500">Nível {user.level}</div>
-        </div>
+        <p className="text-sm text-gray-900 leading-none">{user.name}</p>
       </motion.button>
 
       {/* Dropdown menu */}
@@ -58,10 +54,6 @@ export function UserProfile({ user }: UserProfileProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
           >
-            <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-gray-700">
-              <Settings className="w-4 h-4" />
-              <span className="text-sm">Configurações</span>
-            </button>
             <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-red-600">
               <LogOut className="w-4 h-4" />
               <span className="text-sm">Sair</span>
@@ -72,3 +64,4 @@ export function UserProfile({ user }: UserProfileProps) {
     </div>
   );
 }
+

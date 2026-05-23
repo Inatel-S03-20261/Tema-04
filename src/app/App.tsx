@@ -27,7 +27,6 @@ interface Pokemon {
 const currentUser = {
   name: "Grupo 3",
   avatar: "https://cdn-icons-png.flaticon.com/256/1169/1169608.png",
-  level: 45,
 };
 
 function NextArrow(props: any) {
@@ -58,7 +57,6 @@ export default function App() {
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
-  const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
     const idJogador = 1;
@@ -81,7 +79,6 @@ export default function App() {
         }));
         setPokemons(cartasMapeadas);
       })
-      .catch((err) => setErro(err.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -107,7 +104,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
+    <div className="grid grid-rows-[auto_1fr] min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
       <motion.header
         className="px-6 py-4 bg-white/80 backdrop-blur-md shadow-sm"
         initial={{ y: -100 }}
@@ -116,9 +113,9 @@ export default function App() {
       >
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div>
-            <h1 className="text-gray-900">Visualizador de Cartas Pokémon</h1>
+            <h1 className="text-gray-900">Visualização de Cartas</h1>
             <p className="text-sm text-gray-600 mt-1">
-              Explore a coleção e veja detalhes completos de cada Pokémon
+              Veja as cartas que você possui e clique para detalhes completos
             </p>
           </div>
           <UserProfile user={currentUser} />
@@ -130,23 +127,19 @@ export default function App() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
+          className="h-full"
         >
-          <div className="text-center mb-12">
-            <h2 className="text-gray-900 mb-2">Coleção de Cartas Pokémon</h2>
-            <p className="text-gray-600">
-              Clique em qualquer carta para ver detalhes completos do Pokémon
-            </p>
-          </div>
+          {loading && <p className="text-center text-gray-500">Carregando cartas...</p>}
 
-          {loading && (
-            <p className="text-center text-gray-500">Carregando cartas...</p>
+          {pokemons.length === 0 && !loading && (
+            <div className="h-full -mt-8 flex flex-col items-center justify-center gap-6">
+              <img src="/pokeball.gif" width={200}/>
+              <h2 className="text-3xl font-semibold text-red-600">Nenhum pokémon encontrado...</h2>
+              <p className="text-center text-lg max-w-sm">Aguarde enquanto capturamos seus pokémons iniciais!</p>
+            </div>
           )}
-          {erro && (
-            <p className="text-center text-red-500">
-              {erro} — envie um POST para /cartas primeiro
-            </p>
-          )}
-          {!loading && !erro && (
+
+          {!loading && pokemons.length > 0 && (
             <div className="relative px-12">
               <Slider {...sliderSettings}>
                 {pokemons.map((pokemon) => (
@@ -161,10 +154,7 @@ export default function App() {
       </main>
 
       {selectedPokemon && (
-        <PokemonDetailsModal
-          pokemon={selectedPokemon}
-          onClose={() => setSelectedPokemon(null)}
-        />
+        <PokemonDetailsModal pokemon={selectedPokemon} onClose={() => setSelectedPokemon(null)} />
       )}
     </div>
   );
