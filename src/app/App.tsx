@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PokemonCard } from "./components/PokemonCard";
 import { PokemonDetailsModal } from "./components/PokemonDetailsModal";
+import { PokemonErrorCard } from "./components/PokemonErrorCard";
 import { UserProfile } from "./components/UserProfile";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -57,6 +58,7 @@ export default function App() {
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     const idJogador = 1;
@@ -78,6 +80,11 @@ export default function App() {
           playerId: idJogador,
         }));
         setPokemons(cartasMapeadas);
+        setFetchError(null);
+      })
+      .catch(() => {
+        setPokemons([]);
+        setFetchError("Não foi possível carregar as cartas do jogador.");
       })
       .finally(() => setLoading(false));
   }, []);
@@ -131,7 +138,13 @@ export default function App() {
         >
           {loading && <p className="text-center text-gray-500">Carregando cartas...</p>}
 
-          {pokemons.length === 0 && !loading && (
+          {fetchError && !loading && (
+            <div className="h-full -mt-8 flex flex-col items-center justify-center gap-6">
+              <PokemonErrorCard message={fetchError} />
+            </div>
+          )}
+
+          {pokemons.length === 0 && !loading && !fetchError && (
             <div className="h-full -mt-8 flex flex-col items-center justify-center gap-6">
               <img src="/pokeball.gif" width={200}/>
               <h2 className="text-3xl font-semibold text-red-600">Nenhum pokémon encontrado...</h2>
