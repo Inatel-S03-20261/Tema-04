@@ -1,29 +1,11 @@
-import { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PokemonCard } from "./components/PokemonCard";
-import { PokemonDetailsModal } from "./components/PokemonDetailsModal";
-import { PokemonErrorCard } from "./components/PokemonErrorCard";
-import { UserProfile } from "./components/UserProfile";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
-interface Pokemon {
-  id: number;
-  name: string;
-  type: string[];
-  hp: number;
-  attack: number;
-  defense: number;
-  imageUrl: string;
-  playerId: number;
-  habitat?: string;
-  height?: number;
-  weight?: number;
-  abilities?: string[];
-  description?: string;
-}
+import { PokemonCard } from "@/components/PokemonCard";
+import { PokemonCardSkeleton } from "@/components/PokemonCardSkeleton";
+import { UserProfile } from "@/components/UserProfile";
+import { usePlayerCards } from "@/hooks/usePlayerCards";
+import { PokemonErrorCard } from "@/components/PokemonErrorCard";
 
 const currentUser = {
   name: "Grupo 3",
@@ -54,45 +36,11 @@ function PrevArrow(props: any) {
   );
 }
 
-export default function App() {
-  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
-  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+export default function Home() {
+  const token = "your-user-login";
+  const { distributionPending, distributionError, pokemons } = usePlayerCards(token);
 
-  useEffect(() => {
-    const idJogador = 1;
-
-    fetch(`http://localhost:3001/cartas/${idJogador}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Nenhuma carta encontrada");
-        return res.json();
-      })
-      .then((data) => {
-        const cartasMapeadas: Pokemon[] = data.cartas.map((c: any) => ({
-          id: c.id,
-          name: c.name,
-          type: c.type,
-          hp: c.hp,
-          attack: c.attack,
-          defense: c.defense,
-          imageUrl: c.imageUrl,
-          playerId: idJogador,
-        }));
-        setPokemons(cartasMapeadas);
-        setFetchError(null);
-      })
-      .catch(() => {
-        setPokemons([]);
-        setFetchError("Não foi possível carregar as cartas do jogador.");
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  const handleCardClick = (pokemonId: number) => {
-    const pokemon = pokemons.find((p) => p.id === pokemonId);
-    if (pokemon) setSelectedPokemon(pokemon);
-  };
+  const isLoadingCards = distributionPending || pokemons.some((query) => query.loading);
 
   const sliderSettings = {
     dots: true,
@@ -136,39 +84,48 @@ export default function App() {
           transition={{ delay: 0.2 }}
           className="h-full"
         >
-          {loading && <p className="text-center text-gray-500">Carregando cartas...</p>}
-
-          {fetchError && !loading && (
-            <div className="h-full -mt-8 flex flex-col items-center justify-center gap-6">
-              <PokemonErrorCard message={fetchError} />
+          {isLoadingCards && (
+            <div className="relative px-12">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <PokemonCardSkeleton />
+                <PokemonCardSkeleton />
+                <PokemonCardSkeleton />
+              </div>
             </div>
           )}
 
-          {pokemons.length === 0 && !loading && !fetchError && (
+          {distributionError && (
             <div className="h-full -mt-8 flex flex-col items-center justify-center gap-6">
-              <img src="/pokeball.gif" width={200}/>
+              <PokemonErrorCard message={distributionError.message} />
+            </div>
+          )}
+
+          {pokemons.length === 0 && !isLoadingCards && !distributionError && (
+            <div className="h-full -mt-8 flex flex-col items-center justify-center gap-6">
+              <img src="/pokeball.gif" width={200} />
               <h2 className="text-3xl font-semibold text-red-600">Nenhum pokémon encontrado...</h2>
-              <p className="text-center text-lg max-w-sm">Aguarde enquanto capturamos seus pokémons iniciais!</p>
+              <p className="text-center text-lg max-w-sm">
+                Aguarde enquanto capturamos seus pokémons iniciais!
+              </p>
             </div>
           )}
 
-          {!loading && pokemons.length > 0 && (
+          {pokemons.length > 0 && !isLoadingCards && (
             <div className="relative px-12">
               <Slider {...sliderSettings}>
-                {pokemons.map((pokemon) => (
-                  <div key={pokemon.id} className="px-4 py-8">
-                    <PokemonCard pokemon={pokemon} onCardClick={handleCardClick} />
-                  </div>
-                ))}
+                {pokemons.map(
+                  ({ id, ...pokemon }) =>
+                    id !== null && (
+                      <div key={id} className="px-4 py-8">
+                        <PokemonCard pokemon={pokemon} />
+                      </div>
+                    ),
+                )}
               </Slider>
             </div>
           )}
         </motion.div>
       </main>
-
-      {selectedPokemon && (
-        <PokemonDetailsModal pokemon={selectedPokemon} onClose={() => setSelectedPokemon(null)} />
-      )}
     </div>
   );
 }

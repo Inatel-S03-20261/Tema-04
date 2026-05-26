@@ -1,10 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './styles/index.css';
-import App from './app/App';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Home from "./pages/home";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: false,
+    }
+  }
+});
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <Home />
+    </QueryClientProvider>
   </React.StrictMode>,
 );
