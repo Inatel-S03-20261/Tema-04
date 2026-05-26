@@ -2,12 +2,10 @@ import { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PokemonCard } from "./components/PokemonCard";
-import { PokemonDetailsModal } from "./components/PokemonDetailsModal";
-import { PokemonErrorCard } from "./components/PokemonErrorCard";
-import { UserProfile } from "./components/UserProfile";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { PokemonCard } from "@/components/PokemonCard";
+import { PokemonDetailsModal } from "@/components/PokemonDetailsModal";
+import { PokemonErrorCard } from "@/components/PokemonErrorCard";
+import { UserProfile } from "@/components/UserProfile";
 
 interface Pokemon {
   id: number;
@@ -54,7 +52,7 @@ function PrevArrow(props: any) {
   );
 }
 
-export default function App() {
+export default function Home() {
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);

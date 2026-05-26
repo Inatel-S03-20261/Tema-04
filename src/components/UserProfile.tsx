@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
-import { Settings, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 interface UserProfileProps {

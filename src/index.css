@@ -1,7 +1,5 @@
-@import './tailwind.css';
-@import './theme.css';
+@import "tailwindcss";
 
-/* Slick Carousel Custom Styles */
 .slick-dots {
   bottom: -40px;
 }
