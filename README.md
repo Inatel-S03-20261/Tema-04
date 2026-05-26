@@ -22,24 +22,25 @@ Aplicação responsável por exibir as cartas Pokémon de cada jogador. Consulta
 
 ## Sobre a Aplicação
 
-Esta aplicação é o **frontend** do módulo de Visualização de Cartas dentro do sistema distribuído. Ela tem a responsabilidade de:
+Esta aplicação é o frontend do módulo de Visualização de Cartas do sistema. Principais responsabilidades:
 
-- Consultar o **Serviço de Jogadores** para autenticar e recuperar dados do jogador logado
-- Consultar o **Serviço de Distribuição de Cartas** para obter as cartas atribuídas a cada jogador
-- Consultar a **PokéAPI** para enriquecer os dados de cada carta com informações detalhadas do Pokémon (tipo, habilidades, altura, peso, habitat, etc.)
-- Exibir as cartas de forma visual e interativa para o usuário
+- Consultar o Serviço de Jogadores para autenticação e dados do jogador logado
+- Consultar o Serviço de Distribuição de Cartas para recuperar as cartas atribuídas a cada jogador
+- Enriquecer as cartas com dados da PokéAPI (tipos, estatísticas, imagens, habilidades)
+- Renderizar as cartas de forma responsiva e interativa no navegador
 
-> ⚠️ **Estado atual:** a aplicação conta com um layout funcional utilizando dados mockados. A integração real com os serviços externos está prevista para as próximas etapas do projeto.
+Estado atual: a interface e os componentes principais estão implementados com dados mockados. A integração completa com serviços reais pode ser habilitada substituindo os mocks pelas chamadas HTTP correspondentes.
 
 ---
 
 ## Funcionalidades
 
-- **Visualização de cartas em carrossel** — navegação fluida entre as cartas do jogador
-- **Detalhes do Pokémon** — modal com informações completas ao clicar em uma carta (HP, Ataque, Defesa, tipo, habitat, habilidades, peso e altura)
-- **Perfil do usuário** — exibição do nome e nível do jogador logado no header, com menu de configurações e logout
-- **Design responsivo** — adaptado para desktop, tablet e mobile
-- **Animações** — transições suaves com Framer Motion (biblioteca `motion`)
+- Visualização das cartas por jogador com navegação e seleção
+- Modal ou painel de detalhes com informações enriquecidas do Pokémon
+- Componentes de estado: skeletons de carregamento e tratamento de erro (cards de erro)
+- Perfil do usuário exibido no header (nome, opções básicas)
+- Integração com serviços externos (stub local + estrutura para PokéAPI)
+- Layout responsivo e animações leves para melhor experiência
 
 ---
 
@@ -66,7 +67,6 @@ Esta aplicação é o **frontend** do módulo de Visualização de Cartas dentro
 | [Vite](https://vitejs.dev/) | 6.3.5 | Bundler e servidor de desenvolvimento |
 | [Tailwind CSS](https://tailwindcss.com/) | 4.1.12 | Estilização utilitária |
 | [Motion (Framer Motion)](https://motion.dev/) | 12.23.24 | Animações e transições |
-| [Lucide React](https://lucide.dev/) | 0.487.0 | Ícones |
 | [React Slick](https://react-slick.neostack.com/) | 0.31.0 | Carrossel de cartas |
 
 ---
@@ -74,27 +74,30 @@ Esta aplicação é o **frontend** do módulo de Visualização de Cartas dentro
 ## Estrutura do Projeto
 
 ```
-cardViewing/
+.
+├── docs/                    # diagramas e documentação complementar
+├── public/                  # ativos públicos (imagens estáticas, favicon, etc.)
 ├── src/
-│   ├── app/
-│   │   ├── App.tsx                          # Componente raiz — layout principal e carrossel
-│   │   └── components/
-│   │       ├── PokemonCard.tsx              # Card individual de Pokémon
-│   │       ├── PokemonDetailsModal.tsx      # Modal com detalhes do Pokémon
-│   │       ├── PlayerDetailsModal.tsx       # Modal com detalhes do jogador
-│   │       ├── UserProfile.tsx              # Perfil do usuário no header
-│   │       ├── figma/
-│   │       │   └── ImageWithFallback.jsx    # Componente de imagem com fallback
-│   │       └── ui/                          # Componentes de UI reutilizáveis (shadcn/ui)
-│   ├── styles/
-│   │   ├── index.css                        # Estilos globais
-│   │   ├── tailwind.css                     # Importação do Tailwind
-│   │   └── theme.css                        # Variáveis de tema
-│   └── main.tsx                             # Ponto de entrada da aplicação
+│   ├── components/          # componentes da UI
+│   │   ├── PokemonCard.tsx
+│   │   ├── PokemonCardSkeleton.tsx
+│   │   ├── PokemonErrorCard.tsx
+│   │   └── UserProfile.tsx
+│   
+│   ├── hooks/               # hooks personalizados
+│   │   └── usePlayerCards.ts
+│   ├── pages/               # páginas/rotas da aplicação
+│   │   └── home.tsx
+│   ├── schemas/             # schemas / types compartilhados
+│   │   ├── playerCards.ts
+│   │   └── pokemon.ts
+│   └── services/            # integrações com APIs e lógica de distribuição
+│       ├── cardDistribution/
+│       └── pokeApi/
 ├── index.html
-├── vite.config.ts
 ├── package.json
-└── postcss.config.mjs
+├── tsconfig.json
+└── vite.config.ts
 ```
 
 ---
@@ -139,21 +142,24 @@ Os arquivos de produção serão gerados na pasta `dist/`.
 
 ## Integração com Serviços Externos
 
-A aplicação se integra com três serviços conforme a arquitetura do sistema:
+A aplicação integra com três serviços principais:
 
-### Serviço de Jogadores
-- **Responsabilidade:** autenticação e recuperação de dados do jogador
-- **Métodos relevantes:** `autenticar()`, `guardarToken()`, `validarToken()`
-- **Usado por:** `TelaLogin`, `TelaCadastro`, `VisualizacaoCartas`
+1. Serviço de Jogadores
+  - Responsabilidade: autenticação, perfil e dados do jogador.
+  - Uso: retorna token JWT (Bearer) utilizado nas chamadas ao Serviço de Distribuição de Cartas.
 
-### Serviço de Distribuição de Cartas
-- **Responsabilidade:** retornar as cartas atribuídas a um jogador
-- **Métodos relevantes:** `consultarCartas(token)`
-- **Parâmetros:** `idPokemon`, `idJogador`
+2. Serviço de Distribuição de Cartas
+  - Responsabilidade: fornecer as cartas atribuídas a um jogador.
+  - Retorno esperado: lista de objetos com pelo menos `idPokemon` e `idCarta`.
 
-### PokéAPI
-- **Responsabilidade:** fornecer dados detalhados de cada Pokémon (nome, tipo, imagem, habilidades, habitat, etc.)
-- **Métodos relevantes:** `obterDetalhes(idPokemon)`
-- **Documentação oficial:** [pokeapi.co](https://pokeapi.co/)
+3. PokéAPI
+  - Responsabilidade: dados públicos e enriquecidos de cada Pokémon.
+  - Endpoint: `https://pokeapi.co/api/v2/pokemon/{id}` (documentação em https://pokeapi.co/).
 
-> 💡 Atualmente os dados são mockados diretamente em `App.tsx`. Para conectar com os serviços reais, substitua os objetos `mockPokemons` e `mockPlayers` por chamadas às APIs correspondentes usando `fetch` ou uma biblioteca como `axios`.
+Configuração e boas práticas
+
+- Variáveis de ambiente (Vite): defina os endpoints usando o prefixo `VITE_`, por exemplo:
+
+  - `VITE_PLAYERS_API_URL` — URL base do Serviço de Jogadores
+  - `VITE_CARD_DISTRIBUTION_URL` — URL base do Serviço de Distribuição de Cartas
+
