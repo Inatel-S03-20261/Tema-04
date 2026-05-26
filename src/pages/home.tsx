@@ -6,6 +6,8 @@ import { PokemonCardSkeleton } from "@/components/PokemonCardSkeleton";
 import { UserProfile } from "@/components/UserProfile";
 import { usePlayerCards } from "@/hooks/usePlayerCards";
 import { PokemonErrorCard } from "@/components/PokemonErrorCard";
+import { cardDistributionService } from "@/services/cardDistribution";
+import { pokeApiService } from "@/services/pokeApi";
 
 const currentUser = {
   name: "Grupo 3",
@@ -38,7 +40,10 @@ function PrevArrow(props: any) {
 
 export default function Home() {
   const token = "your-user-login";
-  const { distributionPending, distributionError, pokemons } = usePlayerCards(token);
+  const { distributionPending, distributionError, pokemons } = usePlayerCards(token, {
+    cardDistributionService,
+    pokeApiService,
+  });
 
   const isLoadingCards = distributionPending || pokemons.some((query) => query.loading);
 
