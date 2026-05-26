@@ -1,20 +1,15 @@
 import { motion } from "motion/react";
 import { useState } from "react";
-
-interface Pokemon {
-  id: number;
-  name: string;
-  type: string[];
-  hp: number;
-  attack: number;
-  defense: number;
-  imageUrl: string;
-  playerId: number;
-}
+import { PokemonErrorCard } from "./PokemonErrorCard";
+import type { Pokemon } from "@/schemas/pokemon";
+import { PokemonCardSkeleton } from "./PokemonCardSkeleton";
 
 interface PokemonCardProps {
-  pokemon: Pokemon;
-  onCardClick: (pokemonId: number) => void;
+  pokemon: {
+    data?: Pokemon;
+    error: Error | null;
+    loading: boolean;
+  };
 }
 
 const typeColors: Record<string, string> = {
@@ -41,10 +36,25 @@ const typeTranslations: Record<string, string> = {
   flying: "Voador",
 };
 
-export function PokemonCard({ pokemon, onCardClick }: PokemonCardProps) {
+export function PokemonCard({ pokemon }: PokemonCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
-  const gradientClass = typeColors[pokemon.type[0].toLowerCase()] || "from-gray-400 to-gray-600";
+  const pokemonData = pokemon.data;
+
+  if (pokemon.error) {
+    return (
+      <div className="h-full -mt-8 flex flex-col items-center justify-center gap-6">
+        <PokemonErrorCard message={pokemon.error.message} />
+      </div>
+    );
+  }
+
+  if (pokemon.loading || !pokemonData) {
+    return <PokemonCardSkeleton />;
+  }
+
+  const gradientClass =
+    typeColors[pokemonData.type[0].toLowerCase()] || "from-gray-400 to-gray-600";
 
   return (
     <motion.div
@@ -53,7 +63,6 @@ export function PokemonCard({ pokemon, onCardClick }: PokemonCardProps) {
       whileTap={{ scale: 0.98 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      onClick={() => onCardClick(pokemon.id)}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       <div className="relative bg-gradient-to-br from-yellow-100 via-yellow-50 to-white rounded-2xl p-1 shadow-2xl">
@@ -62,18 +71,17 @@ export function PokemonCard({ pokemon, onCardClick }: PokemonCardProps) {
           <div className={`bg-gradient-to-r ${gradientClass} px-4 py-3`}>
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="text-white capitalize tracking-wide">{pokemon.name}</h3>
+                <h3 className="text-white capitalize tracking-wide">{pokemonData.name}</h3>
                 <div className="flex gap-1 mt-1">
-                  {pokemon.type.map((type) => (
-                    <span key={type} className="text-xs text-white/90 bg-white/20 px-2 py-0.5 rounded-full">
+                  {pokemonData.type.map((type) => (
+                    <span
+                      key={type}
+                      className="text-xs text-white/90 bg-white/20 px-2 py-0.5 rounded-full"
+                    >
                       {typeTranslations[type.toLowerCase()] || type}
                     </span>
                   ))}
                 </div>
-              </div>
-              <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm px-2 py-1 rounded-lg">
-                <span className="text-xs text-white/90">HP</span>
-                <span className="text-white">{pokemon.hp}</span>
               </div>
             </div>
           </div>
@@ -86,8 +94,8 @@ export function PokemonCard({ pokemon, onCardClick }: PokemonCardProps) {
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <img
-                src={pokemon.imageUrl}
-                alt={pokemon.name}
+                src={pokemonData.imageUrl}
+                alt={pokemonData.name}
                 className="w-full h-48 object-contain drop-shadow-2xl"
               />
             </motion.div>
@@ -95,20 +103,6 @@ export function PokemonCard({ pokemon, onCardClick }: PokemonCardProps) {
             {/* Decorative circles */}
             <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-white/40 blur-xl" />
             <div className="absolute bottom-4 left-4 w-20 h-20 rounded-full bg-yellow-200/30 blur-2xl" />
-          </div>
-
-          {/* Stats */}
-          <div className="px-4 py-4 bg-white">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gray-50 rounded-lg px-3 py-2">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Ataque</div>
-                <div className="text-gray-900">{pokemon.attack}</div>
-              </div>
-              <div className="bg-gray-50 rounded-lg px-3 py-2">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Defesa</div>
-                <div className="text-gray-900">{pokemon.defense}</div>
-              </div>
-            </div>
           </div>
 
           {/* Bottom bar */}

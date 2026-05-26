@@ -8,9 +8,14 @@ export function usePlayerCards(token: string) {
   const cardDistributionService = new CardDistributionService();
   const pokeApiService = new PokeApiService();
 
-  const { data: playerPokemonsIds, isPending: distributionPending } = useQuery({
+  const {
+    data: playerPokemonsIds,
+    isPending: distributionPending,
+    error: distributionError,
+  } = useQuery({
     queryKey: cardDistributionKeys.detail(token),
     queryFn: () => cardDistributionService.getPlayerCards(token),
+    enabled: Boolean(token),
   });
 
   const pokemonQueries = useQueries({
@@ -22,9 +27,12 @@ export function usePlayerCards(token: string) {
 
   return {
     distributionPending,
-    pokemons: pokemonQueries.map((query) => ({
+    distributionError,
+    pokemons: pokemonQueries.map((query, index) => ({
       data: query.data,
       loading: query.isPending,
+      error: query.error,
+      id: playerPokemonsIds?.pokemonsIds[index] ?? null,
     })),
   };
 }
