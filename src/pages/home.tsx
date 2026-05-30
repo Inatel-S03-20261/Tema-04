@@ -6,8 +6,9 @@ import { PokemonCardSkeleton } from "@/components/PokemonCardSkeleton";
 import { UserProfile } from "@/components/UserProfile";
 import { usePlayerCards } from "@/hooks/usePlayerCards";
 import { PokemonErrorCard } from "@/components/PokemonErrorCard";
-import { cardDistributionService } from "@/services/cardDistribution";
+
 import { pokeApiService } from "@/services/pokeApi";
+import { cardDistributionMockService as cardDistributionService } from "@/mocks/cardDistribution.mock.service";
 
 const currentUser = {
   name: "Grupo 3",
