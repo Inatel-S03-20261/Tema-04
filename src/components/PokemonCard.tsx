@@ -3,7 +3,7 @@ import { useState } from "react";
 import { PokemonErrorCard } from "./PokemonErrorCard";
 import type { Pokemon } from "@/schemas/pokemon";
 import { PokemonCardSkeleton } from "./PokemonCardSkeleton";
-
+import { PokemonDetailsModal } from "./PokemonDetailsModal";
 interface PokemonCardProps {
   pokemon: {
     data?: Pokemon;
@@ -38,6 +38,7 @@ const typeTranslations: Record<string, string> = {
 
 export function PokemonCard({ pokemon }: PokemonCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const pokemonData = pokemon.data;
 
@@ -57,70 +58,79 @@ export function PokemonCard({ pokemon }: PokemonCardProps) {
     typeColors[pokemonData.type[0].toLowerCase()] || "from-gray-400 to-gray-600";
 
   return (
-    <motion.div
-      className="relative w-full max-w-[320px] mx-auto cursor-pointer select-none"
-      whileHover={{ scale: 1.05, y: -8 }}
-      whileTap={{ scale: 0.98 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-    >
-      <div className="relative bg-gradient-to-br from-yellow-100 via-yellow-50 to-white rounded-2xl p-1 shadow-2xl">
-        <div className="bg-white rounded-xl overflow-hidden">
-          {/* Header with name and HP */}
-          <div className={`bg-gradient-to-r ${gradientClass} px-4 py-3`}>
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-white capitalize tracking-wide">{pokemonData.name}</h3>
-                <div className="flex gap-1 mt-1">
-                  {pokemonData.type.map((type) => (
-                    <span
-                      key={type}
-                      className="text-xs text-white/90 bg-white/20 px-2 py-0.5 rounded-full"
-                    >
-                      {typeTranslations[type.toLowerCase()] || type}
-                    </span>
-                  ))}
+    <>
+      <motion.div
+        className="relative w-full max-w-[320px] mx-auto cursor-pointer select-none"
+        whileHover={{ scale: 1.05, y: -8 }}
+        whileTap={{ scale: 0.98 }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        onClick={() => setModalOpen(true)}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        <div className="relative bg-gradient-to-br from-yellow-100 via-yellow-50 to-white rounded-2xl p-1 shadow-2xl">
+          <div className="bg-white rounded-xl overflow-hidden">
+            {/* Header with name and HP */}
+            <div className={`bg-gradient-to-r ${gradientClass} px-4 py-3`}>
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-white capitalize tracking-wide">{pokemonData.name}</h3>
+                  <div className="flex gap-1 mt-1">
+                    {pokemonData.type.map((type) => (
+                      <span
+                        key={type}
+                        className="text-xs text-white/90 bg-white/20 px-2 py-0.5 rounded-full"
+                      >
+                        {typeTranslations[type.toLowerCase()] || type}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Pokemon Image */}
-          <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 p-6">
-            <motion.div
-              className="relative"
-              animate={isHovered ? { rotateY: 5, rotateX: -5 } : { rotateY: 0, rotateX: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            >
-              <img
-                src={pokemonData.imageUrl}
-                alt={pokemonData.name}
-                className="w-full h-48 object-contain drop-shadow-2xl"
-              />
-            </motion.div>
+            {/* Pokemon Image */}
+            <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+              <motion.div
+                className="relative"
+                animate={isHovered ? { rotateY: 5, rotateX: -5 } : { rotateY: 0, rotateX: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <img
+                  src={pokemonData.imageUrl}
+                  alt={pokemonData.name}
+                  className="w-full h-48 object-contain drop-shadow-2xl"
+                />
+              </motion.div>
 
-            {/* Decorative circles */}
-            <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-white/40 blur-xl" />
-            <div className="absolute bottom-4 left-4 w-20 h-20 rounded-full bg-yellow-200/30 blur-2xl" />
-          </div>
+              {/* Decorative circles */}
+              <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-white/40 blur-xl" />
+              <div className="absolute bottom-4 left-4 w-20 h-20 rounded-full bg-yellow-200/30 blur-2xl" />
+            </div>
 
-          {/* Bottom bar */}
-          <div className={`bg-gradient-to-r ${gradientClass} px-4 py-2`}>
-            <div className="text-center text-xs text-white/80">
-              Clique para ver detalhes do Pokémon
+            {/* Bottom bar */}
+            <div className={`bg-gradient-to-r ${gradientClass} px-4 py-2`}>
+              <div className="text-center text-xs text-white/80">
+                Clique para ver detalhes do Pokémon
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Shine effect on hover */}
-      <motion.div
-        className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/20 to-transparent pointer-events-none"
-        initial={{ opacity: 0, x: "-100%" }}
-        animate={isHovered ? { opacity: 1, x: "100%" } : { opacity: 0, x: "-100%" }}
-        transition={{ duration: 0.6 }}
+        {/* Shine effect on hover */}
+        <motion.div
+          className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/20 to-transparent pointer-events-none"
+          initial={{ opacity: 0, x: "-100%" }}
+          animate={isHovered ? { opacity: 1, x: "100%" } : { opacity: 0, x: "-100%" }}
+          transition={{ duration: 0.6 }}
+        />
+      </motion.div>
+
+      <PokemonDetailsModal
+        pokemon={pokemonData}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
       />
-    </motion.div>
+    </>
   );
 }
