@@ -6,5 +6,5 @@ export const mockPlayer: MockPlayer = {
   id: "player-001",
   name: "Grupo 3",
   email: "grupo3@inatel.br",
-  token: "fake-token-player-001",
+  role: "PLAYER",
 };

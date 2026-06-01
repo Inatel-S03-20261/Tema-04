@@ -1,23 +1,42 @@
-import { mockPlayer, type MockPlayer } from "@/mocks/player.mock";
+import { mockPlayer } from "@/mocks/player.mock";
+import type { AuthResponse } from "@/services/player/player.interface";
 
-export type MockAuthResponse = MockPlayer;
+export type MockAuthResponse = AuthResponse;
 
-export async function mockLogin(email: string, _password: string): Promise<MockAuthResponse> {
+function isBlank(value: string) {
+  return value.trim().length === 0;
+}
+
+export async function mockLogin(email: string, password: string): Promise<MockAuthResponse> {
+  if (isBlank(email) || isBlank(password)) {
+    throw new Error("Credenciais inválidas");
+  }
+
   return {
-    ...mockPlayer,
-    email,
+    token: "fake-jwt-token-player-001",
+    user: {
+      ...mockPlayer,
+      email,
+    },
   };
 }
 
 export async function mockRegister(
   name: string,
   email: string,
-  _password: string,
+  password: string,
 ): Promise<MockAuthResponse> {
+  if (isBlank(name) || isBlank(email) || isBlank(password)) {
+    throw new Error("Dados de cadastro inválidos");
+  }
+
   return {
-    id: "player-new",
-    name,
-    email,
-    token: "fake-token-player-new",
+    token: "fake-jwt-token-player-new",
+    user: {
+      id: "player-new",
+      name,
+      email,
+      role: "PLAYER",
+    },
   };
 }

@@ -19,13 +19,9 @@ export class PlayerMockService implements IPlayerService {
     return mockRegister(name, email, password);
   }
 
-  async getProfile(token: string) {
+  async getProfile(_token: string) {
     await waitMockDelay();
-
-    return {
-      ...mockPlayer,
-      token,
-    };
+    return mockPlayer;
   }
 }
 
