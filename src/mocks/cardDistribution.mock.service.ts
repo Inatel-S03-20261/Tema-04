@@ -1,5 +1,5 @@
 import type { ICardDistributionService } from "@/services/cardDistribution";
-import { pokemonsMock } from "./pokemons.mock";
+import { playerCardsMock } from "@/mocks/cardDistribution.mock";
 
 /**
  * Implementação fake do CardDistributionService para desenvolvimento.
@@ -8,9 +8,7 @@ import { pokemonsMock } from "./pokemons.mock";
  */
 export class CardDistributionMockService implements ICardDistributionService {
   async getPlayerCards(_token: string) {
-    return {
-      pokemonsIds: pokemonsMock.map((pokemon) => String(pokemon.id)),
-    };
+    return playerCardsMock;
   }
 }
 

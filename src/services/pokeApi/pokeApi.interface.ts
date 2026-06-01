@@ -1,5 +1,5 @@
-import type { Pokemon } from "@/schemas/pokemon";
+import type { RawPokeApiPokemon } from "@/mappers/pokemon.mapper";
 
 export interface IPokeApiService {
-  getPokemonDetails: (id: string) => Promise<Pokemon>;
+  getPokemonDetails: (id: string) => Promise<RawPokeApiPokemon>;
 }

@@ -1,4 +1,5 @@
 import { cardDistributionKeys, type ICardDistributionService } from "@/services/cardDistribution";
+import { pokemonMapper, type RawPokeApiPokemon } from "@/mappers/pokemon.mapper";
 import { pokeApiKeys, type IPokeApiService } from "@/services/pokeApi";
 import { useQueries, useQuery } from "@tanstack/react-query";
 
@@ -24,7 +25,10 @@ export function usePlayerCards(
   const pokemonQueries = useQueries({
     queries: (playerPokemonsIds?.pokemonsIds ?? []).map((id) => ({
       queryKey: pokeApiKeys.detail(id),
-      queryFn: () => pokeApiService.getPokemonDetails(id),
+      queryFn: async () => {
+        const rawPokemon: RawPokeApiPokemon = await pokeApiService.getPokemonDetails(id);
+        return pokemonMapper(rawPokemon);
+      },
     })),
   });
 
