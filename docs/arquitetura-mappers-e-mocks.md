@@ -31,8 +31,9 @@ Depois que o mock de autenticação retorna o token, a Home chama o mock de dist
 Com os `idPokemon` recebidos, a aplicação busca os dados reais na PokéAPI por meio do
 `PokeApiService`, aplica o `pokemonMapper` e renderiza o modelo interno `Pokemon`.
 
-O arquivo `src/mocks/pokemon.mock.ts` pode existir como dado auxiliar para testes, mas não faz parte
-do fluxo principal da tela.
+Não existe mock de Pokémon no fluxo principal. Os dados reais do Pokémon vêm da PokéAPI: o
+`PokeApiService` busca o JSON bruto e o `pokemonMapper` transforma esse JSON no modelo interno
+`Pokemon` usado pela tela.
 
 Também foi criado um serviço mock de jogadores em `src/services/player/`, com interface e
 implementação assíncrona para `login`, `register` e `getProfile`.

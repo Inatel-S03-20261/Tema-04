@@ -134,9 +134,9 @@ export default function Home() {
             <div className="relative px-12">
               <Slider {...sliderSettings}>
                 {pokemons.map(
-                  ({ idCarta, idPokemon, id, ...pokemon }) =>
+                  ({ idCarta, idPokemon, ...pokemon }) =>
                     idPokemon !== null && (
-                      <div key={idCarta ?? id ?? idPokemon} className="px-4 py-8">
+                      <div key={idCarta ?? idPokemon} className="px-4 py-8">
                         <PokemonCard pokemon={pokemon} />
                       </div>
                     ),

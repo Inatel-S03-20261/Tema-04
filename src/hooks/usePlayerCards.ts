@@ -45,7 +45,6 @@ export function usePlayerCards(
       data: query.data,
       loading: query.isPending,
       error: query.error,
-      id: distributedCards[index]?.idPokemon ?? null,
     })),
   };
 }
