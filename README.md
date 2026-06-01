@@ -150,7 +150,7 @@ A aplicação integra com três serviços principais:
 
 2. Serviço de Distribuição de Cartas
   - Responsabilidade: fornecer as cartas atribuídas a um jogador.
-  - Retorno esperado: lista de objetos com pelo menos `idPokemon` e `idCarta`.
+  - Retorno esperado: objeto contendo `cards`, uma lista de cartas com pelo menos `idCarta` e `idPokemon`.
 
 3. PokéAPI
   - Responsabilidade: dados públicos e enriquecidos de cada Pokémon.
