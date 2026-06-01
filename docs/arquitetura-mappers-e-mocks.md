@@ -10,6 +10,9 @@ A transformação desse JSON externo para o modelo interno da aplicação fica e
 `src/mappers/pokemon.mapper.ts`. O `pokemonMapper` recebe `RawPokeApiPokemon` e retorna `Pokemon`,
 mapeando `id`, `name`, `type`, `stats` e `imageUrl`.
 
+O tipo `RawPokeApiPokemon` fica em `src/schemas/rawPokeApiPokemon.ts`, separado do mapper e do
+service. Assim, o service não depende da camada de transformação.
+
 O hook `usePlayerCards` é o ponto que combina as duas etapas: busca o JSON bruto pelo
 `PokeApiService` e aplica o `pokemonMapper` antes de entregar os dados para a tela.
 

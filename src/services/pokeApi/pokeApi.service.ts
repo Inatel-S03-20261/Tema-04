@@ -1,4 +1,4 @@
-import type { RawPokeApiPokemon } from "@/mappers/pokemon.mapper";
+import type { RawPokeApiPokemon } from "@/schemas/rawPokeApiPokemon";
 import type { IPokeApiService } from "./pokeApi.interface";
 
 export class PokeApiService implements IPokeApiService {

@@ -1,5 +1,6 @@
 import { cardDistributionKeys, type ICardDistributionService } from "@/services/cardDistribution";
-import { pokemonMapper, type RawPokeApiPokemon } from "@/mappers/pokemon.mapper";
+import { pokemonMapper } from "@/mappers/pokemon.mapper";
+import type { RawPokeApiPokemon } from "@/schemas/rawPokeApiPokemon";
 import { pokeApiKeys, type IPokeApiService } from "@/services/pokeApi";
 import { useQueries, useQuery } from "@tanstack/react-query";
 
