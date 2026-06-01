@@ -14,7 +14,7 @@ export function usePlayerCards(
   { cardDistributionService, pokeApiService }: UsePlayerCardsDeps,
 ) {
   const {
-    data: playerPokemonsIds,
+    data: playerCards,
     isPending: distributionPending,
     error: distributionError,
   } = useQuery({
@@ -23,8 +23,11 @@ export function usePlayerCards(
     enabled: Boolean(token),
   });
 
+  const distributedCards = playerCards?.cards ?? [];
+  const pokemonIds = distributedCards.map((card) => card.idPokemon);
+
   const pokemonQueries = useQueries({
-    queries: (playerPokemonsIds?.pokemonsIds ?? []).map((id) => ({
+    queries: pokemonIds.map((id) => ({
       queryKey: pokeApiKeys.detail(id),
       queryFn: async () => {
         const rawPokemon: RawPokeApiPokemon = await pokeApiService.getPokemonDetails(id);
@@ -37,10 +40,12 @@ export function usePlayerCards(
     distributionPending,
     distributionError,
     pokemons: pokemonQueries.map((query, index) => ({
+      idCarta: distributedCards[index]?.idCarta ?? null,
+      idPokemon: distributedCards[index]?.idPokemon ?? null,
       data: query.data,
       loading: query.isPending,
       error: query.error,
-      id: playerPokemonsIds?.pokemonsIds[index] ?? null,
+      id: distributedCards[index]?.idPokemon ?? null,
     })),
   };
 }

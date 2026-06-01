@@ -1,3 +1,8 @@
+export interface DistributedCard {
+  idCarta: string;
+  idPokemon: string;
+}
+
 export interface PlayerCards {
-  pokemonsIds: string[];
+  cards: DistributedCard[];
 }
