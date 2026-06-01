@@ -1,6 +1,7 @@
 import Slider from "react-slick";
 import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { PokemonCard } from "@/components/PokemonCard";
 import { PokemonCardSkeleton } from "@/components/PokemonCardSkeleton";
 import { UserProfile } from "@/components/UserProfile";
@@ -8,12 +9,8 @@ import { usePlayerCards } from "@/hooks/usePlayerCards";
 import { PokemonErrorCard } from "@/components/PokemonErrorCard";
 
 import { pokeApiService } from "@/services/pokeApi";
+import { playerMockService } from "@/services/player";
 import { cardDistributionMockService as cardDistributionService } from "@/mocks/cardDistribution.mock.service";
-
-const currentUser = {
-  name: "Grupo 3",
-  avatar: "https://cdn-icons-png.flaticon.com/256/1169/1169608.png",
-};
 
 function NextArrow(props: any) {
   const { onClick } = props;
@@ -40,13 +37,30 @@ function PrevArrow(props: any) {
 }
 
 export default function Home() {
-  const token = "your-user-login";
+  const {
+    data: authSession,
+    isPending: authPending,
+    error: authError,
+  } = useQuery({
+    queryKey: ["mock-auth-session"],
+    queryFn: () => playerMockService.login("grupo3@inatel.br", "123456"),
+    retry: false,
+  });
+
+  const token = authSession?.token ?? "";
+  const currentUser = {
+    name: authSession?.user.name ?? "Carregando...",
+    avatar: "https://cdn-icons-png.flaticon.com/256/1169/1169608.png",
+  };
+
   const { distributionPending, distributionError, pokemons } = usePlayerCards(token, {
     cardDistributionService,
     pokeApiService,
   });
 
-  const isLoadingCards = distributionPending || pokemons.some((query) => query.loading);
+  const isLoadingCards =
+    authPending || distributionPending || pokemons.some((query) => query.loading);
+  const pageError = authError ?? distributionError;
 
   const sliderSettings = {
     dots: true,
@@ -100,13 +114,13 @@ export default function Home() {
             </div>
           )}
 
-          {distributionError && (
+          {pageError && (
             <div className="h-full -mt-8 flex flex-col items-center justify-center gap-6">
-              <PokemonErrorCard message={distributionError.message} />
+              <PokemonErrorCard message={pageError.message} />
             </div>
           )}
 
-          {pokemons.length === 0 && !isLoadingCards && !distributionError && (
+          {pokemons.length === 0 && !isLoadingCards && !pageError && (
             <div className="h-full -mt-8 flex flex-col items-center justify-center gap-6">
               <img src="/pokeball.gif" width={200} />
               <h2 className="text-3xl font-semibold text-red-600">Nenhum pokémon encontrado...</h2>
@@ -116,13 +130,13 @@ export default function Home() {
             </div>
           )}
 
-          {pokemons.length > 0 && !isLoadingCards && (
+          {pokemons.length > 0 && !isLoadingCards && !pageError && (
             <div className="relative px-12">
               <Slider {...sliderSettings}>
                 {pokemons.map(
-                  ({ id, ...pokemon }) =>
-                    id !== null && (
-                      <div key={id} className="px-4 py-8">
+                  ({ idCarta, idPokemon, id, ...pokemon }) =>
+                    idPokemon !== null && (
+                      <div key={idCarta ?? id ?? idPokemon} className="px-4 py-8">
                         <PokemonCard pokemon={pokemon} />
                       </div>
                     ),

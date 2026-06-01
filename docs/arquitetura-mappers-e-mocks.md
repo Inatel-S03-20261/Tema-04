@@ -21,13 +21,18 @@ formato externo mudar, a adaptação fica concentrada no mapper.
 
 ## Mocks locais
 
-Foram adicionados mocks simples para desenvolvimento e testes antes da integração com serviços
-reais:
+O fluxo principal usa mocks apenas para os serviços que ainda não existem localmente:
 
-- `src/mocks/auth.mock.ts`: funções mockadas de login e cadastro.
-- `src/mocks/player.mock.ts`: jogador mockado com id, nome, email e token fake.
-- `src/mocks/cardDistribution.mock.ts`: lista local de IDs de Pokémon do jogador.
-- `src/mocks/pokemon.mock.ts`: Pokémon já formatados no modelo interno `Pokemon`.
+- `src/mocks/auth.mock.ts`: simula login e cadastro, retornando `token` e `user`.
+- `src/mocks/cardDistribution.mock.ts`: simula a posse das cartas, retornando `idCarta` e
+  `idPokemon`.
+
+Depois que o mock de autenticação retorna o token, a Home chama o mock de distribuição de cartas.
+Com os `idPokemon` recebidos, a aplicação busca os dados reais na PokéAPI por meio do
+`PokeApiService`, aplica o `pokemonMapper` e renderiza o modelo interno `Pokemon`.
+
+O arquivo `src/mocks/pokemon.mock.ts` pode existir como dado auxiliar para testes, mas não faz parte
+do fluxo principal da tela.
 
 Também foi criado um serviço mock de jogadores em `src/services/player/`, com interface e
 implementação assíncrona para `login`, `register` e `getProfile`.
