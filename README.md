@@ -163,3 +163,210 @@ Configuração e boas práticas
   - `VITE_PLAYERS_API_URL` — URL base do Serviço de Jogadores
   - `VITE_CARD_DISTRIBUTION_URL` — URL base do Serviço de Distribuição de Cartas
 
+### Contratos JSON esperados
+
+Esta seção documenta os formatos de JSON esperados das outras equipes para a integração com a
+Aplicação 4. O fluxo atual é:
+
+`login/auth mock -> token -> cardDistribution mock -> idPokemon -> PokéAPI real -> pokemonMapper -> tela`
+
+Os mocks existem apenas para simular serviços ainda não integrados. Não existe mock de Pokémon no
+fluxo principal; os dados reais dos Pokémon vêm da PokéAPI.
+
+#### Serviço de Jogadores / Autenticação
+
+Esperamos que login ou cadastro retornem um token de acesso e os dados básicos do usuário.
+
+Formato esperado:
+
+```json
+{
+  "token": "jwt-ou-token-de-acesso",
+  "user": {
+    "id": "player-001",
+    "name": "Grupo 3",
+    "email": "grupo3@inatel.br",
+    "role": "PLAYER"
+  }
+}
+```
+
+Campos esperados:
+
+- `token`: string obrigatória. Será usado nas próximas chamadas.
+- `user.id`: string obrigatória.
+- `user.name`: string obrigatória.
+- `user.email`: string obrigatória.
+- `user.role`: string opcional/recomendada. Exemplo: `"PLAYER"`.
+
+Se a equipe de autenticação retornar outro nome de campo, como `accessToken` em vez de `token`, a
+Aplicação 4 precisará adaptar o service/mapper de autenticação.
+
+#### Serviço de Distribuição de Cartas
+
+A Aplicação 4 espera que a equipe de Distribuição de Cartas envie apenas a relação das cartas que
+pertencem ao jogador autenticado. A Aplicação 4 não espera receber dados completos do Pokémon nesse
+JSON.
+
+A Distribuição deve enviar apenas:
+
+- o identificador da carta distribuída;
+- o identificador do Pokémon vinculado a essa carta.
+
+Formato principal esperado:
+
+```json
+{
+  "cards": [
+    {
+      "idCarta": "card-001",
+      "idPokemon": "1"
+    },
+    {
+      "idCarta": "card-002",
+      "idPokemon": "4"
+    },
+    {
+      "idCarta": "card-003",
+      "idPokemon": "7"
+    },
+    {
+      "idCarta": "card-004",
+      "idPokemon": "25"
+    },
+    {
+      "idCarta": "card-005",
+      "idPokemon": "39"
+    }
+  ]
+}
+```
+
+Campos esperados:
+
+- `cards`: array obrigatório.
+- `cards[].idCarta`: string obrigatória. Identifica a carta distribuída para o jogador.
+- `cards[].idPokemon`: string obrigatória. Identifica qual Pokémon aquela carta representa.
+
+Regras esperadas da Distribuição:
+
+- O endpoint deve retornar apenas as cartas do jogador autenticado.
+- A chamada deve usar o token recebido no login/autenticação.
+- Cada item do array representa uma carta distribuída.
+- `idCarta` deve ser único para cada carta distribuída.
+- `idPokemon` deve ser compatível com o ID usado na PokéAPI.
+- O retorno ideal deve conter 5 cartas, conforme a proposta do serviço de distribuição.
+- Não deve repetir Pokémon para o mesmo jogador, se essa for a regra definida pela equipe de distribuição.
+- Pode repetir Pokémon entre jogadores diferentes, se essa for a regra definida pela equipe de distribuição.
+
+O que a Distribuição não precisa enviar:
+
+- `name`
+- `type`
+- `stats`
+- `imageUrl`
+- `sprites`
+- habilidades
+- peso
+- altura
+- qualquer outro dado completo do Pokémon
+
+Motivo: a Aplicação 4 usa o `idPokemon` recebido da Distribuição para consultar a PokéAPI
+diretamente:
+
+```text
+https://pokeapi.co/api/v2/pokemon/{idPokemon}
+```
+
+Depois disso, o `pokemonMapper` transforma o JSON bruto da PokéAPI para o modelo interno usado na
+tela.
+
+Se a equipe de Distribuição retornar outro formato, por exemplo:
+
+```json
+[
+  {
+    "cardId": "card-001",
+    "pokemonId": "1"
+  }
+]
+```
+
+ou:
+
+```json
+{
+  "pokemons": ["1", "4", "7", "25", "39"]
+}
+```
+
+a Aplicação 4 precisará criar/adaptar um mapper para converter esse formato para o padrão interno:
+
+```json
+{
+  "cards": [
+    {
+      "idCarta": "card-001",
+      "idPokemon": "1"
+    }
+  ]
+}
+```
+
+#### PokéAPI
+
+A PokéAPI externa será usada para buscar os dados completos do Pokémon.
+
+Endpoint esperado:
+
+```text
+https://pokeapi.co/api/v2/pokemon/{idPokemon}
+```
+
+A Aplicação 4 espera do JSON bruto da PokéAPI pelo menos:
+
+- `id`
+- `name`
+- `types`
+- `stats`
+- `sprites`
+
+Esse JSON bruto não vai direto para a tela. Ele passa pelo `pokemonMapper`, que transforma os dados
+para o modelo interno:
+
+```json
+{
+  "id": 1,
+  "name": "bulbasaur",
+  "type": ["grass", "poison"],
+  "stats": [
+    {
+      "name": "hp",
+      "value": 45,
+      "effort": 0
+    }
+  ],
+  "imageUrl": "https://..."
+}
+```
+
+#### Fluxo resumido
+
+1. Usuário faz login/cadastro no Serviço de Jogadores.
+2. A Aplicação 4 recebe token + user.
+3. A Aplicação 4 envia o token para o Serviço de Distribuição de Cartas.
+4. O Serviço de Distribuição retorna cards com `idCarta` + `idPokemon`.
+5. A Aplicação 4 usa `idPokemon` para buscar os detalhes na PokéAPI.
+6. O `pokemonMapper` transforma o JSON bruto da PokéAPI.
+7. A tela renderiza as cartas com os dados tratados.
+
+#### Cuidados importantes
+
+- Não enviar dados completos do Pokémon pelo Serviço de Distribuição.
+- A Distribuição deve enviar somente `idCarta` e `idPokemon`.
+- `idPokemon` precisa ser compatível com a PokéAPI.
+- Não depender diretamente do formato da PokéAPI nos componentes React.
+- Qualquer diferença no JSON das equipes deve ser tratada em services/mappers.
+- Manter `idCarta` e `idPokemon` como campos mínimos para integração.
+- Manter token separado dos dados do usuário.
+

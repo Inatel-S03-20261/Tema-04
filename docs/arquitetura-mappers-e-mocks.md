@@ -37,3 +37,6 @@ Não existe mock de Pokémon no fluxo principal. Os dados reais do Pokémon vêm
 
 Também foi criado um serviço mock de jogadores em `src/services/player/`, com interface e
 implementação assíncrona para `login`, `register` e `getProfile`.
+
+Os contratos JSON esperados para integração com as outras equipes estão documentados no
+`README.md`, na seção "Integração com Serviços Externos".
