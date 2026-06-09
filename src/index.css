@@ -1,27 +1,35 @@
 @import "tailwindcss";
 
+.slick-list,
+.slick-track {
+  background: transparent !important;
+}
+
 .slick-dots {
-  bottom: -40px;
+  bottom: -32px;
 }
 
 .slick-dots li button:before {
-  font-size: 10px;
-  color: #6366f1;
-  opacity: 0.3;
+  font-size: 8px;
+  color: #818cf8;
+  opacity: 0.25;
+  transition: all 0.2s;
 }
 
 .slick-dots li.slick-active button:before {
   opacity: 1;
-  color: #6366f1;
+  color: #818cf8;
+  font-size: 10px;
 }
 
 .slick-slide {
-  transition: all 0.3s ease;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  will-change: transform, opacity;
 }
 
 .slick-slide:not(.slick-center) {
-  opacity: 0.5;
-  transform: scale(0.85);
+  opacity: 0.45;
+  transform: scale(0.82);
 }
 
 .slick-center {
