@@ -11,15 +11,31 @@
 
 ### 🧪 Mocks (criar antes da próxima aula)
 
-- [ ] **[alta]** Criar mock de autenticação (login)
-  - Criar `src/mocks/login.mock.ts` com dados simulados de requisição e resposta do endpoint de login (ex.: `{ token: "...", jogadorId: "..." }`). Usar nos testes e no desenvolvimento enquanto o `JogadorService` real não estiver integrado.
+- [X] **[alta]** Criar mock de autenticação (login)
+  - `src/mocks/auth.mock.ts` com `mockLogin` e `mockRegister`. Usado por `AuthMockService` que implementa `IAuthService`.
 
-- [ ] **[alta]** Criar mock de cadastro
-  - Criar `src/mocks/cadastro.mock.ts` com dados simulados de requisição e resposta do endpoint de cadastro (ex.: payload com nome, email, senha e resposta de sucesso/erro). Usar para desenvolver a `TelaCadastro` sem depender do backend.
+- [X] **[alta]** Criar mock de cadastro
+  - `mockRegister` em `src/mocks/auth.mock.ts` simula cadastro com resposta tipada `AuthResponse`.
 
 - [X] **[alta]** Criar mock de pokemons
-  - Criar `src/mocks/pokemons.mock.ts` com uma lista de objetos `Pokemon` (já no formato do schema, pós-mapper) para uso em desenvolvimento e testes. Substituir qualquer `mockPokemons` espalhado na codebase por essa fonte centralizada.
+  - `src/mocks/pokemons.mock.ts` com lista de objetos `Pokemon` no formato pós-mapper.
 
+### 🔐 Autenticação (novo)
+
+- [X] **[alta]** Criar tela de login
+  - `src/pages/login.tsx` com campos de e-mail e senha, validação, animações framer-motion, feedback de erro e botão com loading state.
+
+- [X] **[alta]** Criar tela de cadastro
+  - `src/pages/register.tsx` com campos de nome, e-mail, senha e confirmação, validação, animações e navegação de volta para o login.
+
+- [X] **[alta]** Criar `IAuthService` + `AuthMockService`
+  - `src/services/auth/auth.interface.ts` define contrato. `src/services/auth/auth.mock.service.ts` implementa usando os mocks.
+
+- [X] **[alta]** Criar `AuthContext` e `AuthProvider`
+  - `src/contexts/AuthContext.tsx` gerencia estado global de autenticação (user, token, isAuthenticated) com `login`, `register` e `logout`.
+
+- [X] **[alta]** Conectar "Sair" ao logout real
+  - `UserProfile.tsx` usa `useAuth().logout()` — ao clicar em Sair, a sessão é limpa e o app volta para a tela de login com animação.
 
 ### 🃏 Lógica e design de cartas
 
@@ -29,8 +45,8 @@
 - [X] **[média]** Implementar modal de detalhes do Pokémon ao clicar na carta
   - `PokemonDetailsModal.tsx` criado com animações, stats com barras animadas, imagem flutuante e cores por tipo. Renderizado via `createPortal` para não conflitar com o carrossel.
 
-- [ ] **[média]** Melhorar o design visual das cartas e do carrossel
-  - As cartas e o carrossel estão funcionais mas podem ser mais polidos: tamanho das imagens dos Pokémons, proporções do card, espaçamento entre cartas, animações de transição do slider, responsividade, e qualquer outro ajuste visual que melhore a apresentação geral.
+- [X] **[média]** Melhorar o design visual das cartas e do carrossel
+  - Cartas centralizadas verticalmente na tela com `flex-1 + justify-center`. Padding e espaçamento do slider ajustados. Cards com proporções melhoradas.
 
 - [ ] **[média]** Exibir cartas filtradas pelo jogador logado
   - Atualmente o carrossel mostra todos os Pokémons. Após integração real, deve exibir apenas as cartas do jogador autenticado (usando `idJogador`).
