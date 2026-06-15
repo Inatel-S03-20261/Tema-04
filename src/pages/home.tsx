@@ -7,9 +7,7 @@ import { UserProfile } from "@/components/UserProfile";
 import { usePlayerCards } from "@/hooks/usePlayerCards";
 import { PokemonErrorCard } from "@/components/PokemonErrorCard";
 import { useAuth } from "@/contexts/AuthContext";
-
-import { pokeApiService } from "@/services/pokeApi";
-import { cardDistributionMockService as cardDistributionService } from "@/mocks/cardDistribution.mock.service";
+import { useServiceStrategy } from "@/services/strategy/serviceStrategy";
 
 function NextArrow(props: any) {
   const { onClick } = props;
@@ -37,6 +35,7 @@ function PrevArrow(props: any) {
 
 export default function Home() {
   const { user, token } = useAuth();
+  const { cardDistributionService, pokeApiService } = useServiceStrategy();
 
   const currentUser = {
     name: user?.name ?? "Jogador",
