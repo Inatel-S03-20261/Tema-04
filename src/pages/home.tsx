@@ -1,7 +1,7 @@
 import Slider from "react-slick";
 import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PokemonCard } from "@/components/PokemonCard";
+import { PokemonCardWrapper } from "@/components/PokemonCardWrapper";
 import { PokemonCardSkeleton } from "@/components/PokemonCardSkeleton";
 import { UserProfile } from "@/components/UserProfile";
 import { usePlayerCards } from "@/hooks/usePlayerCards";
@@ -122,7 +122,7 @@ export default function Home() {
                   ({ idCarta, idPokemon, ...pokemon }) =>
                     idPokemon !== null && (
                       <div key={idCarta ?? idPokemon} className="px-4 py-10">
-                        <PokemonCard pokemon={pokemon} />
+                        <PokemonCardWrapper pokemon={pokemon} />
                       </div>
                     ),
                 )}
