@@ -1,5 +1,5 @@
 import type { PlayerCards } from "@/schemas/playerCards";
 
 export interface ICardDistributionService {
-  getPlayerCards: (token: string) => Promise<PlayerCards>;
+  getPlayerCards: (playerId?: string) => Promise<PlayerCards>;
 }

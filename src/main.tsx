@@ -8,8 +8,8 @@ import { AnimatePresence, motion } from "motion/react";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { authMockService } from "./services/auth/auth.mock.service";
+import { AuthProvider, useAuth } from "./contexts/auth";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,10 +24,15 @@ const queryClient = new QueryClient({
 type AuthScreen = "login" | "register";
 
 function AppRouter() {
-  const { isAuthenticated } = useAuth();
+  const { user, isLoadingUser } = useAuth();
+
   const [authScreen, setAuthScreen] = useState<AuthScreen>("login");
 
-  if (isAuthenticated) {
+  if (isLoadingUser) {
+    return null;
+  }
+
+  if (user) {
     return (
       <motion.div
         key="home"

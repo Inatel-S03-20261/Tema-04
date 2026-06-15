@@ -7,20 +7,22 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 type UsePlayerCardsDeps = {
   cardDistributionService: ICardDistributionService;
   pokeApiService: IPokeApiService;
+  playerId?: string;
 };
 
-export function usePlayerCards(
-  token: string,
-  { cardDistributionService, pokeApiService }: UsePlayerCardsDeps,
-) {
+export function usePlayerCards({
+  cardDistributionService,
+  pokeApiService,
+  playerId,
+}: UsePlayerCardsDeps) {
   const {
     data: playerCards,
     isPending: distributionPending,
     error: distributionError,
   } = useQuery({
-    queryKey: cardDistributionKeys.detail(token),
-    queryFn: () => cardDistributionService.getPlayerCards(token),
-    enabled: Boolean(token),
+    queryKey: cardDistributionKeys.detail(playerId!),
+    queryFn: () => cardDistributionService.getPlayerCards(playerId || ""),
+    enabled: Boolean(playerId),
   });
 
   const distributedCards = playerCards?.cards ?? [];

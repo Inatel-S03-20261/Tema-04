@@ -1,7 +1,22 @@
-import type { AuthResponse } from "@/services/player/player.interface";
+import type { Player } from "@/services/player";
+
+export interface UserLogin {
+  email: string;
+  password: string;
+}
+
+export interface UserRegister extends UserLogin {
+  name: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: Player;
+}
 
 export interface IAuthService {
-  login(email: string, password: string): Promise<AuthResponse>;
-  register(name: string, email: string, password: string): Promise<AuthResponse>;
+  validateToken(token: string): Promise<Player>;
+  login(payload: UserLogin): Promise<AuthResponse>;
+  register(payload: UserRegister): Promise<AuthResponse>;
   logout(): Promise<void>;
 }

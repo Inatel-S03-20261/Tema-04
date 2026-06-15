@@ -1,5 +1,5 @@
-import { mockLogin, mockRegister } from "@/mocks/auth.mock";
-import type { IAuthService } from "./auth.interface";
+import { mockLogin, mockRegister, mockValidateToken } from "@/mocks/auth.mock";
+import type { IAuthService, UserLogin, UserRegister } from "./auth.interface";
 
 const MOCK_DELAY_MS = 600;
 
@@ -8,18 +8,23 @@ function delay() {
 }
 
 export class AuthMockService implements IAuthService {
-  async login(email: string, password: string) {
+  async login({ email, password }: UserLogin) {
     await delay();
     return mockLogin(email, password);
   }
 
-  async register(name: string, email: string, password: string) {
+  async register({ name, email, password }: UserRegister) {
     await delay();
     return mockRegister(name, email, password);
   }
 
   async logout() {
     await delay();
+  }
+
+  async validateToken(token: string) {
+    await delay();
+    return mockValidateToken(token);
   }
 }
 

@@ -6,10 +6,10 @@ import { PokemonCardSkeleton } from "@/components/PokemonCardSkeleton";
 import { UserProfile } from "@/components/UserProfile";
 import { usePlayerCards } from "@/hooks/usePlayerCards";
 import { PokemonErrorCard } from "@/components/PokemonErrorCard";
-import { useAuth } from "@/contexts/AuthContext";
 
 import { pokeApiService } from "@/services/pokeApi";
 import { cardDistributionMockService as cardDistributionService } from "@/mocks/cardDistribution.mock.service";
+import { useAuth } from "@/contexts/auth";
 
 function NextArrow(props: any) {
   const { onClick } = props;
@@ -36,14 +36,15 @@ function PrevArrow(props: any) {
 }
 
 export default function Home() {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
 
   const currentUser = {
     name: user?.name ?? "Jogador",
     avatar: "https://cdn-icons-png.flaticon.com/256/1169/1169608.png",
   };
 
-  const { distributionPending, distributionError, pokemons } = usePlayerCards(token ?? "", {
+  const { distributionPending, distributionError, pokemons } = usePlayerCards({
+    playerId: user?.id,
     cardDistributionService,
     pokeApiService,
   });

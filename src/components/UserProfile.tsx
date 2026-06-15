@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { LogOut, User } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth";
 
 interface UserProfileProps {
   user: {
@@ -11,9 +11,10 @@ interface UserProfileProps {
 }
 
 export function UserProfile({ user }: UserProfileProps) {
-  const { logout } = useAuth();
+  const { signOut } = useAuth();
+
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,16 +32,6 @@ export function UserProfile({ user }: UserProfileProps) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-
-  async function handleLogout() {
-    setIsLoggingOut(true);
-    try {
-      await logout();
-    } finally {
-      setIsLoggingOut(false);
-      setIsOpen(false);
-    }
-  }
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -79,15 +70,12 @@ export function UserProfile({ user }: UserProfileProps) {
             </div>
 
             <motion.button
-              onClick={handleLogout}
-              disabled={isLoggingOut}
+              onClick={signOut}
               className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-red-600 disabled:opacity-50"
               whileHover={{ x: 2 }}
             >
               <LogOut className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                {isLoggingOut ? "Saindo..." : "Sair"}
-              </span>
+              <span className="text-sm font-medium">Sair</span>
             </motion.button>
           </motion.div>
         )}
