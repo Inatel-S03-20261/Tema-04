@@ -10,6 +10,8 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import { authMockService } from "./services/auth/auth.mock.service";
 import { AuthProvider, useAuth } from "./contexts/auth";
+import { ServiceStrategyProvider } from "./services/strategy/serviceStrategy";
+import { mockStrategy } from "./services/strategy/strategies";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -76,9 +78,11 @@ function AppRouter() {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider authService={authMockService}>
-        <AppRouter />
-      </AuthProvider>
+      <ServiceStrategyProvider strategy={mockStrategy}>
+        <AuthProvider authService={authMockService}>
+          <AppRouter />
+        </AuthProvider>
+      </ServiceStrategyProvider>
     </QueryClientProvider>
   </React.StrictMode>,
 );

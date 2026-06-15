@@ -10,6 +10,7 @@ import { PokemonErrorCard } from "@/components/PokemonErrorCard";
 import { pokeApiService } from "@/services/pokeApi";
 import { cardDistributionMockService as cardDistributionService } from "@/mocks/cardDistribution.mock.service";
 import { useAuth } from "@/contexts/auth";
+import { useServiceStrategy } from "@/services/strategy/serviceStrategy";
 
 function NextArrow(props: any) {
   const { onClick } = props;
@@ -37,6 +38,7 @@ function PrevArrow(props: any) {
 
 export default function Home() {
   const { user } = useAuth();
+  const { cardDistributionService, pokeApiService } = useServiceStrategy();
 
   const { distributionPending, distributionError, pokemons } = usePlayerCards({
     playerId: user?.id,
