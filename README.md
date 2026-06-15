@@ -14,7 +14,6 @@ Aplicação responsável por exibir as cartas Pokémon de cada jogador. Consulta
   - [Diagrama de Caso de Uso](#diagrama-de-caso-de-uso)
   - [Diagrama de Classes](#diagrama-de-classes)
 - [Tecnologias](#tecnologias)
-- [Estrutura do Projeto](#estrutura-do-projeto)
 - [Como Executar](#como-executar)
 - [Integração com Serviços Externos](#integração-com-serviços-externos)
 
@@ -68,37 +67,6 @@ Estado atual: a interface e os componentes principais estão implementados com d
 | [Tailwind CSS](https://tailwindcss.com/) | 4.1.12 | Estilização utilitária |
 | [Motion (Framer Motion)](https://motion.dev/) | 12.23.24 | Animações e transições |
 | [React Slick](https://react-slick.neostack.com/) | 0.31.0 | Carrossel de cartas |
-
----
-
-## Estrutura do Projeto
-
-```
-.
-├── docs/                    # diagramas e documentação complementar
-├── public/                  # ativos públicos (imagens estáticas, favicon, etc.)
-├── src/
-│   ├── components/          # componentes da UI
-│   │   ├── PokemonCard.tsx
-│   │   ├── PokemonCardSkeleton.tsx
-│   │   ├── PokemonErrorCard.tsx
-│   │   └── UserProfile.tsx
-│   
-│   ├── hooks/               # hooks personalizados
-│   │   └── usePlayerCards.ts
-│   ├── pages/               # páginas/rotas da aplicação
-│   │   └── home.tsx
-│   ├── schemas/             # schemas / types compartilhados
-│   │   ├── playerCards.ts
-│   │   └── pokemon.ts
-│   └── services/            # integrações com APIs e lógica de distribuição
-│       ├── cardDistribution/
-│       └── pokeApi/
-├── index.html
-├── package.json
-├── tsconfig.json
-└── vite.config.ts
-```
 
 ---
 
