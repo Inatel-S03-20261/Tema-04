@@ -38,11 +38,6 @@ function PrevArrow(props: any) {
 export default function Home() {
   const { user } = useAuth();
 
-  const currentUser = {
-    name: user?.name ?? "Jogador",
-    avatar: "https://cdn-icons-png.flaticon.com/256/1169/1169608.png",
-  };
-
   const { distributionPending, distributionError, pokemons } = usePlayerCards({
     playerId: user?.id,
     cardDistributionService,
@@ -83,7 +78,7 @@ export default function Home() {
               Sua coleção de Pokémon — clique em uma carta para ver detalhes
             </p>
           </div>
-          <UserProfile user={currentUser} />
+          <UserProfile />
         </div>
       </motion.header>
 
