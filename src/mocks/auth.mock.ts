@@ -1,5 +1,5 @@
 import { mockPlayer } from "@/mocks/player.mock";
-import type { AuthResponse } from "@/services/player/player.interface";
+import type { AuthResponse } from "@/services/auth";
 
 export type MockAuthResponse = AuthResponse;
 
@@ -39,4 +39,12 @@ export async function mockRegister(
       role: "PLAYER",
     },
   };
+}
+
+export async function mockValidateToken(token: string) {
+  if (token === "fake-jwt-token-player-001") {
+    return mockPlayer;
+  }
+
+  throw new Error("Token inválido");
 }

@@ -7,9 +7,9 @@ import { playerCardsMock } from "@/mocks/cardDistribution.mock";
  * Para voltar ao serviço real, basta trocar no home.tsx.
  */
 export class CardDistributionMockService implements ICardDistributionService {
-  async getPlayerCards(token: string) {
-    if (!token.trim()) {
-      throw new Error("Token de acesso inválido");
+  async getPlayerCards(playerId?: string) {
+    if (!playerId || !playerId.trim()) {
+      throw new Error("ID do jogador é obrigatório para obter as cartas.");
     }
 
     return playerCardsMock;

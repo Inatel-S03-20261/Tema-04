@@ -1,20 +1,20 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Eye, EyeOff, UserPlus, Loader2, ArrowLeft } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth";
 
 interface RegisterPageProps {
   onGoToLogin: () => void;
 }
 
 export default function Register({ onGoToLogin }: RegisterPageProps) {
-  const { register } = useAuth();
+  const { register, isPendingLogin: isLoading } = useAuth();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit() {
@@ -31,13 +31,10 @@ export default function Register({ onGoToLogin }: RegisterPageProps) {
       return;
     }
     setError(null);
-    setIsLoading(true);
     try {
-      await register(name, email, password);
+      await register({ name, email, password });
     } catch (err: any) {
       setError(err?.message ?? "Erro ao criar conta. Tente novamente.");
-    } finally {
-      setIsLoading(false);
     }
   }
 

@@ -1,19 +1,13 @@
 import { motion, AnimatePresence } from "motion/react";
 import { LogOut, User } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth";
 
-interface UserProfileProps {
-  user: {
-    name: string;
-    avatar: string;
-  };
-}
+export function UserProfile() {
+  const { user, signOut } = useAuth();
 
-export function UserProfile({ user }: UserProfileProps) {
-  const { logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,16 +26,6 @@ export function UserProfile({ user }: UserProfileProps) {
     };
   }, [isOpen]);
 
-  async function handleLogout() {
-    setIsLoggingOut(true);
-    try {
-      await logout();
-    } finally {
-      setIsLoggingOut(false);
-      setIsOpen(false);
-    }
-  }
-
   return (
     <div className="relative" ref={dropdownRef}>
       <motion.button
@@ -51,11 +35,11 @@ export function UserProfile({ user }: UserProfileProps) {
         onClick={() => setIsOpen(!isOpen)}
       >
         <img
-          src={user.avatar}
-          alt={user.name}
+          src="https://cdn-icons-png.flaticon.com/256/1169/1169608.png"
+          alt={user?.name}
           className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500"
         />
-        <p className="text-sm text-gray-900 leading-none font-medium">{user.name}</p>
+        <p className="text-sm text-gray-900 leading-none font-medium">{user?.name}</p>
       </motion.button>
 
       {/* Dropdown menu */}
@@ -72,22 +56,19 @@ export function UserProfile({ user }: UserProfileProps) {
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-indigo-500" />
                 <div>
-                  <p className="text-xs font-semibold text-gray-900 leading-none">{user.name}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">Jogador</p>
+                  <p className="text-xs font-semibold text-gray-900 leading-none">{user?.name}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{user?.role}</p>
                 </div>
               </div>
             </div>
 
             <motion.button
-              onClick={handleLogout}
-              disabled={isLoggingOut}
+              onClick={signOut}
               className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-red-600 disabled:opacity-50"
               whileHover={{ x: 2 }}
             >
               <LogOut className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                {isLoggingOut ? "Saindo..." : "Sair"}
-              </span>
+              <span className="text-sm font-medium">Sair</span>
             </motion.button>
           </motion.div>
         )}

@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Eye, EyeOff, LogIn, Loader2 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth";
 
 interface LoginPageProps {
   onGoToRegister: () => void;
 }
 
 export default function Login({ onGoToRegister }: LoginPageProps) {
-  const { login } = useAuth();
+  const { signIn, isPendingLogin: isLoading } = useAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit() {
@@ -20,14 +20,12 @@ export default function Login({ onGoToRegister }: LoginPageProps) {
       setError("Preencha todos os campos.");
       return;
     }
+
     setError(null);
-    setIsLoading(true);
     try {
-      await login(email, password);
+      await signIn({ email, password });
     } catch (err: any) {
       setError(err?.message ?? "Erro ao fazer login. Tente novamente.");
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -134,7 +132,7 @@ export default function Login({ onGoToRegister }: LoginPageProps) {
             <motion.button
               onClick={handleSubmit}
               disabled={isLoading}
-              className="w-full bg-indigo-500 hover:bg-indigo-400 disabled:bg-indigo-500/50 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-indigo-500/30 mt-2"
+              className="w-full cursor-pointer disabled:cursor-not-allowed bg-indigo-500 hover:bg-indigo-400 disabled:bg-indigo-500/50 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-indigo-500/30 mt-2"
               whileHover={{ scale: isLoading ? 1 : 1.02 }}
               whileTap={{ scale: isLoading ? 1 : 0.97 }}
             >
@@ -159,7 +157,7 @@ export default function Login({ onGoToRegister }: LoginPageProps) {
               Não tem conta?{" "}
               <button
                 onClick={onGoToRegister}
-                className="text-indigo-300 hover:text-white font-medium transition-colors underline-offset-2 hover:underline"
+                className="cursor-pointer text-indigo-300 hover:text-white font-medium transition-colors underline-offset-2 hover:underline"
               >
                 Criar conta
               </button>

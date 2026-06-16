@@ -48,8 +48,8 @@
 - [X] **[média]** Melhorar o design visual das cartas e do carrossel
   - Cartas centralizadas verticalmente na tela com `flex-1 + justify-center`. Padding e espaçamento do slider ajustados. Cards com proporções melhoradas.
 
-- [ ] **[média]** Exibir cartas filtradas pelo jogador logado
+- [X] **[média]** Exibir cartas filtradas pelo jogador logado
   - Atualmente o carrossel mostra todos os Pokémons. Após integração real, deve exibir apenas as cartas do jogador autenticado (usando `idJogador`).
 
-- [ ] **[baixa]** Conectar `PlayerDetailsModal` ao perfil real do jogador
+- [X] **[baixa]** Conectar `PlayerDetailsModal` ao perfil real do jogador
   - `PlayerDetailsModal.tsx` existe mas nunca é chamado em `App.tsx`. Deve ser aberto ao clicar no perfil e exibir dados reais vindos do Serviço de Jogadores.
