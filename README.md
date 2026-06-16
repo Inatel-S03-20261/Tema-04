@@ -15,6 +15,7 @@ Aplicação responsável por exibir as cartas Pokémon de cada jogador. Consulta
   - [Diagrama de Classes](#diagrama-de-classes)
 - [Tecnologias](#tecnologias)
 - [Como Executar](#como-executar)
+- [Design Pattern aplicado: Adapter](#design-pattern-aplicado-adapter)
 - [Integração com Serviços Externos](#integração-com-serviços-externos)
 
 ---
@@ -108,6 +109,19 @@ Os arquivos de produção serão gerados na pasta `dist/`.
 
 ---
 
+## Design Pattern aplicado: Adapter
+
+A aplicação utiliza o padrão Adapter para converter os dados recebidos de serviços externos, como
+Distribuição de Cartas e PokéAPI, para modelos internos utilizados pela interface. Dessa forma, os
+componentes React não dependem diretamente do formato retornado pelas APIs, facilitando manutenção
+e futuras mudanças nos contratos dos serviços.
+
+Na prática, o `CardDistributionAdapter` converte o retorno com `idCarta` e `idPokemon` para o
+modelo interno da carta do jogador, enquanto o `PokemonApiAdapter` converte o JSON bruto da
+PokéAPI para o modelo interno `Pokemon`.
+
+---
+
 ## Integração com Serviços Externos
 
 A aplicação integra com três serviços principais:
@@ -136,7 +150,7 @@ Configuração e boas práticas
 Esta seção documenta os formatos de JSON esperados das outras equipes para a integração com a
 Aplicação 4. O fluxo atual é:
 
-`login/auth mock -> token -> cardDistribution mock -> idPokemon -> PokéAPI real -> pokemonMapper -> tela`
+`login/auth mock -> token -> cardDistribution mock -> CardDistributionAdapter -> PokéAPI real -> PokemonApiAdapter -> tela`
 
 Os mocks existem apenas para simular serviços ainda não integrados. Não existe mock de Pokémon no
 fluxo principal; os dados reais dos Pokémon vêm da PokéAPI.
@@ -246,7 +260,7 @@ diretamente:
 https://pokeapi.co/api/v2/pokemon/{idPokemon}
 ```
 
-Depois disso, o `pokemonMapper` transforma o JSON bruto da PokéAPI para o modelo interno usado na
+Depois disso, o `PokemonApiAdapter` transforma o JSON bruto da PokéAPI para o modelo interno usado na
 tela.
 
 Se a equipe de Distribuição retornar outro formato, por exemplo:
@@ -268,7 +282,7 @@ ou:
 }
 ```
 
-a Aplicação 4 precisará criar/adaptar um mapper para converter esse formato para o padrão interno:
+a Aplicação 4 precisará ajustar o adapter para converter esse formato para o padrão interno:
 
 ```json
 {
@@ -299,7 +313,7 @@ A Aplicação 4 espera do JSON bruto da PokéAPI pelo menos:
 - `stats`
 - `sprites`
 
-Esse JSON bruto não vai direto para a tela. Ele passa pelo `pokemonMapper`, que transforma os dados
+Esse JSON bruto não vai direto para a tela. Ele passa pelo `PokemonApiAdapter`, que transforma os dados
 para o modelo interno:
 
 ```json
@@ -325,7 +339,7 @@ para o modelo interno:
 3. A Aplicação 4 envia o token para o Serviço de Distribuição de Cartas.
 4. O Serviço de Distribuição retorna cards com `idCarta` + `idPokemon`.
 5. A Aplicação 4 usa `idPokemon` para buscar os detalhes na PokéAPI.
-6. O `pokemonMapper` transforma o JSON bruto da PokéAPI.
+6. O `PokemonApiAdapter` transforma o JSON bruto da PokéAPI.
 7. A tela renderiza as cartas com os dados tratados.
 
 #### Cuidados importantes
@@ -334,7 +348,7 @@ para o modelo interno:
 - A Distribuição deve enviar somente `idCarta` e `idPokemon`.
 - `idPokemon` precisa ser compatível com a PokéAPI.
 - Não depender diretamente do formato da PokéAPI nos componentes React.
-- Qualquer diferença no JSON das equipes deve ser tratada em services/mappers.
+- Qualquer diferença no JSON das equipes deve ser tratada em services/adapters.
 - Manter `idCarta` e `idPokemon` como campos mínimos para integração.
 - Manter token separado dos dados do usuário.
 

@@ -1,6 +1,6 @@
 import { cardDistributionKeys, type ICardDistributionService } from "@/services/cardDistribution";
-import { pokemonMapper } from "@/mappers/pokemon.mapper";
-import type { RawPokeApiPokemon } from "@/schemas/rawPokeApiPokemon";
+import { CardDistributionAdapter } from "@/adapters/CardDistributionAdapter";
+import { PokemonApiAdapter } from "@/adapters/PokemonApiAdapter";
 import { pokeApiKeys, type IPokeApiService } from "@/services/pokeApi";
 import { useQueries, useQuery } from "@tanstack/react-query";
 
@@ -25,15 +25,17 @@ export function usePlayerCards({
     enabled: Boolean(playerId),
   });
 
-  const distributedCards = playerCards?.cards ?? [];
-  const pokemonIds = distributedCards.map((card) => card.idPokemon);
+  const distributedCards = playerCards
+    ? CardDistributionAdapter.toPokemonList(playerCards)
+    : [];
+  const pokemonIds = distributedCards.map((card) => card.pokemonId);
 
   const pokemonQueries = useQueries({
     queries: pokemonIds.map((id) => ({
       queryKey: pokeApiKeys.detail(id),
       queryFn: async () => {
-        const rawPokemon: RawPokeApiPokemon = await pokeApiService.getPokemonDetails(id);
-        return pokemonMapper(rawPokemon);
+        const rawPokemon = await pokeApiService.getPokemonDetails(id);
+        return PokemonApiAdapter.toPokemon(rawPokemon);
       },
     })),
   });
@@ -42,8 +44,8 @@ export function usePlayerCards({
     distributionPending,
     distributionError,
     pokemons: pokemonQueries.map((query, index) => ({
-      idCarta: distributedCards[index]?.idCarta ?? null,
-      idPokemon: distributedCards[index]?.idPokemon ?? null,
+      cardId: distributedCards[index]?.cardId ?? null,
+      pokemonId: distributedCards[index]?.pokemonId ?? null,
       data: query.data,
       loading: query.isPending,
       error: query.error,
