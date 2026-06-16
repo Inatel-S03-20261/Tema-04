@@ -1,4 +1,4 @@
-import Slider from "react-slick";
+import Slider, { type CustomArrowProps } from "react-slick";
 import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PokemonCardWrapper } from "@/components/PokemonCardWrapper";
@@ -7,13 +7,10 @@ import { UserProfile } from "@/components/UserProfile";
 import { usePlayerCards } from "@/hooks/usePlayerCards";
 import { PokemonErrorCard } from "@/components/PokemonErrorCard";
 
-import { pokeApiService } from "@/services/pokeApi";
-import { cardDistributionMockService as cardDistributionService } from "@/mocks/cardDistribution.mock.service";
 import { useAuth } from "@/contexts/auth";
 import { useServiceStrategy } from "@/services/strategy/serviceStrategy";
 
-function NextArrow(props: any) {
-  const { onClick } = props;
+function NextArrow({ onClick }: CustomArrowProps) {
   return (
     <button
       onClick={onClick}
@@ -24,8 +21,7 @@ function NextArrow(props: any) {
   );
 }
 
-function PrevArrow(props: any) {
-  const { onClick } = props;
+function PrevArrow({ onClick }: CustomArrowProps) {
   return (
     <button
       onClick={onClick}
@@ -121,9 +117,9 @@ export default function Home() {
             <div className="relative px-16">
               <Slider {...sliderSettings}>
                 {pokemons.map(
-                  ({ idCarta, idPokemon, ...pokemon }) =>
-                    idPokemon !== null && (
-                      <div key={idCarta ?? idPokemon} className="px-4 py-10">
+                  ({ cardId, pokemonId, ...pokemon }) =>
+                    pokemonId !== null && (
+                      <div key={cardId ?? pokemonId} className="px-4 py-10">
                         <PokemonCardWrapper pokemon={pokemon} />
                       </div>
                     ),
